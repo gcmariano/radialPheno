@@ -29,3 +29,5 @@ Once you have installed all libraries, you will need a CSV file with your time s
 available at *time series example* folder as an example to explore the use of RadialPheno. This file contains greeness indexes 
 obtained from sequences of daily digital vegetation images  taken from a cerrado, a neotropical savanna, 
 one of the monitoring sites of the [e-phenology network](http://www.recod.ic.unicamp.br/ephenology).
+
+_IMPORTANT:_ your file must have the same format and time columns as in the example.
