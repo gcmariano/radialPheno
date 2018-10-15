@@ -1,1 +1,156 @@
+div_bar{
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis--x path {
+  display: none;
+}
+
+#boxSvg{
+	width:500px;
+}	
+
+.left-side, .main-sidebar{
+	background: white !important;
+}
+
+.main-header .navbar{
+	background: #D4EFDF !important;
+}
+
+.main-header .logo{
+	background: #229954 !important;
+	font-family: unset !important;
+	width: 360px !important;
+}
+
+.content{
+	/*background: #EFEFEF !important;*/
+}
+
+.main-header .navbar-custom-menu, .main-header .navbar-right {
+    float: right;
+}
+
+.skin-blue .sidebar-menu>li:hover>a{
+    color: orange;
+    border-left-color: orange;
+    background: rgba(0,0,0,.1);;
+
+}
+
+.skin-blue .sidebar-menu>li.active>a {
+	color: #0091D5;
+    background: #fff;
+    border-left-color: #0091D5;
+}
+
+.skin-blue .sidebar a{
+	color: gray;
+}
+
+.skin-blue .sidebar-menu>li>a {
+    border-left: 3px solid gray;
+}
+
+.main-header .navbar{
+margin-left: 360px !important;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle{
+	color: gray;
+}
+.skin-blue .main-header .navbar .sidebar-toggle:hover{
+	background: rgba(0,0,0,.1);;
+	color: orange;
+}
+
+.skin-blue .main-header .navbar .nav>li>a{
+	color: #0091D5;
+}
+
+.bg-light-blue, .label-primary, .modal-primary .modal-body{
+	color: white !important;
+	background-color: orange !important;
+}
+
+div#logged_user{
+	color: gray;
+}
+
+.skin-blue .main-header .navbar .nav .open>a, .skin-blue .main-header .navbar .nav .open>a:focus, .skin-blue .main-header .navbar .nav .open>a:hover, .skin-blue .main-header .navbar .nav>.active>a, .skin-blue .main-header .navbar .nav>li>a:active, .skin-blue .main-header .navbar .nav>li>a:focus, .skin-blue .main-header .navbar .nav>li>a:hover{
+	color:orange;
+	background: rgba(0,0,0,.1);
+}
+
+
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: orange;
+}
+
+.bar:hover {
+  fill: orangered ;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+.content-wrapper, .right-side{
+	
+	background-color: #ffffff !important;
+	}
+
+
+
 
