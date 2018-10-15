@@ -395,8 +395,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$savePdfID, {
     values$plot_graph <-  1
     
-    pdf(file=paste(species, ".pdf", sep=""))
     species <- paste(input$speciesID, "(", input$roiID, ")", "-", values$yearsSelected[values$dataIndexSelected])
+    pdf(file=paste(species, ".pdf", sep=""))
     if(!values$showVarsData){
       values$ncircles <- length(values$variablesSelected)
       values$circle.names <- values$variablesSelected

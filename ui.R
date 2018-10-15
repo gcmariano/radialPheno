@@ -1,6 +1,5 @@
 library(shinydashboard)
 library(shiny)
-library(leaflet)
 library(dplyr)
 library(plotly)
 library(shinyjs)
