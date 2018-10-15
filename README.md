@@ -30,4 +30,4 @@ available at *time series example* folder as an example to explore the use of Ra
 obtained from sequences of daily digital vegetation images  taken from a cerrado, a neotropical savanna, 
 one of the monitoring sites of the [e-phenology network](http://www.recod.ic.unicamp.br/ephenology).
 
-_IMPORTANT:_ your file must have the same format and time columns as in the example.
+_IMPORTANT:_ your file must have the same format and the columns *year, month and doy* as in the example.
