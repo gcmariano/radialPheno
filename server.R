@@ -2,6 +2,7 @@
 library(shiny)
 library(RColorBrewer)
 library(tidyquant)
+library(plyr)
 
 
 #----------- DRAW VISUALIZATION - FUNCTIONS TO DRAW AND COLOR -------------------------
@@ -71,7 +72,7 @@ fillSegment<-function(rmenor, rmaior, thetamenor, thetamaior, segment.color){
 
 #main function 
 drawVisualStructureImages<- function(ncircles, nmacrosegments, nmicrosegments, circle.names, macrosegment.names, microsegment.names, segment.colors, vr, species, minValue, maxValue){
-  plot.size <- ncircles + 4
+  plot.size <- ncircles + 4.5
   plot(-plot.size:plot.size, type="n", xlim = c(-plot.size,plot.size), ylim = c(-plot.size,plot.size), xlab="",ylab="",asp = 1, axes = FALSE, main = substitute(paste("Species:", italic(species), sep=""), list(species=species)), cex.main=1.5)
   
   circle(0,0,3)
@@ -240,6 +241,13 @@ shinyServer(function(input, output, session) {
       dataYear <- subset(df, year==values$yearsSelected[y])
       print(dataYear)
       assign(paste("data", values$yearsSelected[y], sep=""), dataYear)
+      #new 
+      days <- seq(as.Date(paste(unique(dataYear$year), "/01/01", sep="")), as.Date(paste(unique(dataYear$year), "/12/31", sep="")), by="day")
+      months <- data.frame(interval = seq(as.Date(paste(unique(dataYear$year), "/01/01", sep="")), as.Date(paste(unique(dataYear$year), "/12/31", sep="")), by="month"))
+      weeks <- data.frame(interval = seq(as.Date(paste(unique(dataYear$year), "/01/01", sep="")), as.Date(paste(unique(dataYear$year), "/12/31", sep="")), by="week")) 
+      ###end new
+      
+      
       for(v in 1:length(values$variablesSelected)){
         var <-  round(subset(dataYear, select = values$variablesSelected[v]), digits = 3)
         print(var)
@@ -273,38 +281,82 @@ shinyServer(function(input, output, session) {
         }
         else if(values$periodicitySelected == 2){ #mean by monthly
           values$nmicrosegments <- 1
+          
           varAux <- data.frame(interval = as.Date(dataYear$doy-1, origin=paste(dataYear$year, "-01-01", sep="")), value= var)
           
           namecol <- colnames(var)
+          ##new
+          varAux <- varAux[varAux[,2]>0,]
+          ###end new
+          
           xts.ts <- xts(varAux[,2], varAux$interval)
           (m <- apply.monthly(xts.ts, mean))
-          
           index(m) <-  floor_date(index(m),"month")
-          var <- as.data.frame(m)
+          
+          #new
+          dfMonthAux <- cbind(data.frame(interval = index(m)), value = data.frame(m))
+          dfJoinMonths <- join(months, dfMonthAux, by = 'interval', type = "left")
+          var <- as.data.frame(dfJoinMonths$m)
+          rownames(var) <- dfJoinMonths$interval
+          ###end new
+          
+          
+          #var <- as.data.frame(m)
           colnames(var) <- values$variablesSelected[v] #arrumar aqui para mostrar média deos meses para imagens por espécie e ano
+          
+          #new
+          #put Na as 0
+          var[is.na(var)] <- 0
+          ##end new
         }  else if(values$periodicitySelected == 3){ #mean by week
           values$nmicrosegments <- 4
           varAux <- data.frame(interval = as.Date(dataYear$doy-1, origin=paste(dataYear$year, "-01-01", sep="")), value= var)
           
-          if(length(values$doys) < 365){ 
-            
-            start <- paste(unique(dataYear$year), "-01-01", sep="")
-            end <- paste(unique(dataYear$year), "-12-30", sep="")
-            dateComplement <- data.frame(date=seq(as.Date(start), as.Date(end), by="days"))
-            
-            #final dataframe
-            varAux <- merge(varAux, dateComplement, by.x='interval', by.y='date', all.x=T, all.y=T)
-            
-            varAux[is.na(varAux)] <- 0
-          }
-          
+          ##new
+          varAux <- varAux[varAux[,2]>0,]
+          ###end new
           
           namecol <- colnames(var)
           xts.ts <- xts(varAux[,2], varAux$interval)
-          var2 <- apply.weekly(xts.ts, mean)
-          var <- var2[,1]
-          colnames(var) <- namecol
-          print(var)
+          (w <- apply.weekly(xts.ts, mean))
+          #index(w) <- floor_date(index(w),"week") 
+          
+          
+          dfWeekAux <- cbind(data.frame(interval = as.Date(rownames(data.frame(w)))), value = data.frame(w))
+          dfJoinWeeks <- join(weeks, dfWeekAux, by = 'interval', type = "left")
+          var <- as.data.frame(dfJoinWeeks$w)
+          rownames(var) <- dfJoinWeeks$interval
+          ###end new
+          
+          #var <- as.data.frame(m)
+          colnames(var) <- values$variablesSelected[v] #arrumar aqui para mostrar média deos meses para imagens por espécie e ano
+          
+          #new
+          #put Na as 0
+          var[is.na(var)] <- 0
+          
+          
+          ### old uncomment
+          
+          # if(length(values$doys) < 365){ 
+          #   
+          #   start <- paste(unique(dataYear$year), "-01-01", sep="")
+          #   end <- paste(unique(dataYear$year), "-12-30", sep="")
+          #   dateComplement <- data.frame(date=seq(as.Date(start), as.Date(end), by="days"))
+          #   
+          #   #final dataframe
+          #   varAux <- merge(varAux, dateComplement, by.x='interval', by.y='date', all.x=T, all.y=T)
+          #   
+          #   varAux[is.na(varAux)] <- 0
+          # }
+          # 
+          # 
+          # namecol <- colnames(var)
+          # xts.ts <- xts(varAux[,2], varAux$interval)
+          # var2 <- apply.weekly(xts.ts, mean)
+          # var <- var2[,1]
+          # colnames(var) <- namecol
+          # print(var)
         } 
         
         assign(paste("var", v, sep=""), var)
@@ -458,7 +510,7 @@ shinyServer(function(input, output, session) {
       } else {
         values$ncircles <- length(values$yearsSelected)
         values$circle.names <- values$yearsSelected
-        species <- paste(input$speciesID, "(", values$variablesSelected, " ", input$roiID, ")", "-", values$yearsSelected[values$dataIndexSelected])
+        species <- paste(input$speciesID, "(", values$variablesSelected, " ", input$roiID, ")", "-", values$yearsSelected[1], "-", values$yearsSelected[length(values$yearsSelected)])
         drawVisualStructureImages(values$ncircles, values$nmacrosegments, values$nmicrosegments, values$circle.names, values$macrosegment.names, values$microsegment.names, values$macrosegment.colors, get(paste("vrVars", values$dataIndexSelected, sep="")), species, values$minD, values$maxD)
         vrVars <- get(paste("vrVars", values$dataIndexSelected, sep=""))
         colnames(vrVars) <-  values$yearsSelected
